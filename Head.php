@@ -46,5 +46,4 @@ echo <<< END_OF_TEXT
     <link rel="icon" type="image/jpg" href="./image/raichi.jpg">
     <title>RAICHI_Official</title>
 END_OF_TEXT;
-require_once(DOCUMENT_PATH."/function.php");
 ?>

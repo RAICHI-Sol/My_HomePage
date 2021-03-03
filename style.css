@@ -46,7 +46,7 @@ p {
 /************************************
 Title_Style
 *************************************/
-header.title {
+header {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -60,7 +60,7 @@ header.title {
   overflow: hidden;
 }
 
-header.title h1 {
+header h1 {
   text-align: center;
   width: 60%;
   height: 60%;
@@ -72,18 +72,18 @@ header.title h1 {
 }
 
 @media (max-width: 900px) {
-  header.title h1 {
+  header h1 {
     font-size: 25px;
   }
 }
 
 @media (max-width: 414px) {
-  header.title h1 {
+  header h1 {
     font-size: 19px;
   }
 }
 
-header.title a {
+header a {
   margin: 5px;
   margin-bottom: 0;
   color: white;
@@ -173,7 +173,7 @@ Menu_Style
 /************************************
 Contents_Style
 *************************************/
-.contents {
+main {
   background-color: rgba(255, 255, 255, 0.829);
   width: 70%;
   margin: 0 auto;
@@ -181,7 +181,7 @@ Contents_Style
   overflow: hidden;
 }
 
-.contents h1 {
+main h1 {
   -webkit-animation-name: fadeIn;
           animation-name: fadeIn;
   -webkit-animation-delay: 0s;
@@ -198,13 +198,13 @@ Contents_Style
 }
 
 @media (max-width: 414px) {
-  .contents h1 {
+  main h1 {
     font-size: 25px;
   }
 }
 
 @media (max-width: 900px) {
-  .contents {
+  main {
     width: 100%;
   }
 }
@@ -446,6 +446,7 @@ List_Style
   padding-right: 10px;
   -o-object-fit: cover;
      object-fit: cover;
+  border-radius: 50%;
 }
 
 @media (max-width: 414px) {
@@ -484,7 +485,7 @@ ImageSlide_Style
   overscroll-behavior-x: contain;
 }
 
-.frame .slide .flame {
+.frame .slide .illust {
   scroll-snap-align: center;
   width: 400px;
   height: 500px;
@@ -493,7 +494,7 @@ ImageSlide_Style
   border: solid 5px #555353;
 }
 
-.frame .slide .flame img {
+.frame .slide .illust img {
   -o-object-fit: contain;
      object-fit: contain;
   width: 400px;
@@ -503,13 +504,13 @@ ImageSlide_Style
           transition-duration: 0.6s;
 }
 
-.frame .slide .flame img:hover {
+.frame .slide .illust img:hover {
   -webkit-filter: brightness(50%);
           filter: brightness(50%);
 }
 
 @media (max-width: 414px) {
-  .frame .slide .flame img {
+  .frame .slide .illust img {
     width: 380px;
     height: 480px;
     margin: 0;
@@ -517,7 +518,7 @@ ImageSlide_Style
 }
 
 @media (max-width: 414px) {
-  .frame .slide .flame {
+  .frame .slide .illust {
     width: 380px;
     height: 500px;
     margin: 0;

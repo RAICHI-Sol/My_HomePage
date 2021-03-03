@@ -1,7 +1,7 @@
 /************************************
 include
 *************************************/
-@mixin font($font,$color){ 
+@mixin font($font,$color){
     font-family:$font;
     color:$color;
 }
@@ -87,7 +87,7 @@ p{
 /************************************
 Title_Style
 *************************************/
-header.title{
+header{
     position: relative;
     display: flex;
     background-color:red;
@@ -180,7 +180,7 @@ Menu_Style
 /************************************
 Contents_Style
 *************************************/
-.contents{
+main{
     background-color:rgba(255, 255, 255, 0.829);
     width: 70%;
     margin:0 auto;
@@ -301,6 +301,7 @@ List_Style
         margin:10px;
         padding-right:10px;
         object-fit: cover;
+        border-radius: 50%;
         @media (max-width:414px){
             @include width_height(150px,150px);
         }
@@ -327,7 +328,7 @@ ImageSlide_Style
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         overscroll-behavior-x: contain;
-        .flame {
+        .illust {
             scroll-snap-align: center;
             @include width_height(400px,500px);
             margin: 10px auto;
@@ -477,11 +478,11 @@ Gallary_Style
             display: none;
             @include top_left(90%,80%);
         }
-        
+
         &:hover img{
             filter:brightness(50%);
         }
-        
+
         &:hover p{
             display: block;
         }
@@ -489,7 +490,7 @@ Gallary_Style
         &:hover form{
             display: block;
         }
-    
+
         @media (max-width:414px){
             @include width_height(95%,95%);
         }
