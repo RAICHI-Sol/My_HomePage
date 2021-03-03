@@ -22,6 +22,10 @@ h1 {
           transition-duration: 0.6s;
 }
 
+p {
+  font-family: "M PLUS 1p";
+}
+
 /************************************
 Title_Style
 *************************************/
@@ -606,12 +610,29 @@ div.gallary {
   content: '』';
 }
 
+.image_text form {
+  position: absolute;
+  display: none;
+  top: 90%;
+  left: 90%;
+}
+
+.image_text form input {
+  width: 80%;
+  height: 80%;
+  border-radius: 10px;
+}
+
 .image_text:hover img {
   -webkit-filter: brightness(50%);
           filter: brightness(50%);
 }
 
 .image_text:hover p {
+  display: block;
+}
+
+.image_text:hover form {
   display: block;
 }
 
@@ -632,10 +653,6 @@ Form_UploadImg_Style
   margin: 0 auto;
   background: cornsilk;
   border-radius: 10px;
-}
-
-.upload p {
-  font-family: "M PLUS 1p";
 }
 
 /************************************

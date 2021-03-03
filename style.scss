@@ -440,6 +440,18 @@ div.gallary{
             content: '』';
         }
     }
+    form{
+        position:absolute;
+        display: none;
+        top:90%;
+        left:90%;
+        input{
+            width:80%;
+            height:80%;
+            border-radius: 10px;
+        }
+    }
+
     &:hover img{
         filter:brightness(50%);
     }
@@ -447,6 +459,10 @@ div.gallary{
     &:hover p{
         display: block;
     }
+    &:hover form{
+        display: block;
+    }
+
     @media (max-width:414px){
         width:95%;
         height:95%;

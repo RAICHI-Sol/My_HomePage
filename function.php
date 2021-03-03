@@ -4,6 +4,9 @@
 親クラス
 *
 *************************************************/
+/****************************************************
+ファイル処理クラス(抽象クラス)
+****************************************************/
 abstract class File_prosess{
     public $file_path;
     protected $fp;
@@ -37,23 +40,13 @@ abstract class File_prosess{
 
     //ファイルの書き込み
     public function write($str){
-        $this->fp = fopen(NEWFILE_PATH,"r+");
+        $this->fp = fopen($this->file_path,"r+");
 
         if($this->lock() == 0){
-            $_contents = $this->write_process($this->fp,$str);
+            $_contents = $this->write_process($str);
             fwrite($this->fp,$_contents);
             $this->unlock();
         }
-    }
-
-    //ファイルに書き込むテキストを一行ずつ検討
-    public function write_process($str)
-    {
-        $file_str = null;
-        while($line = fgets($this->fp)){
-            $file_str .= $line;
-        }
-        return $file_str;
     }
 
     //ファイルロック
@@ -81,10 +74,46 @@ abstract class File_prosess{
     //抽象メソッド
     abstract public function read_process($line);
 
+    //ファイルに書き込むテキストを一行ずつ検討
+    abstract public function write_process($str);
+
 }
 
 /****************************************************
-画像読み込みクラス
+フォーム作成クラス(抽象クラス)
+****************************************************/
+abstract class Form{
+    public $action;
+    public $enctype;
+    public $f_name;
+
+    //コンストラクタ
+    public function __construct($action,$f_name,$enctype = ENCODE_NOMAL)
+    {
+        $this->$action = $action;
+        $this->enctype = $enctype;
+        $this->f_name = $f_name;
+    }
+
+    //フォームの作成
+    public function create(){
+        echo <<< EOT
+            <div class = "{$this->f_name}">
+            <form action = "{$this->action}" method = "post"
+            target = "contents" enctype = "{$this->enctype}">
+        EOT;
+        Input::Hidden($this->f_name,1);
+        $this->create_input();
+        echo '</form></div>';
+    }
+
+    //抽象メソッド
+    abstract public function create_input();
+
+}
+
+/****************************************************
+画像生成クラス
 ****************************************************/
 class Image{
     public $dir_file;
@@ -125,6 +154,45 @@ class Image{
             print_r($element);
         }
     }
+}
+
+/****************************************************
+入力要素クラス
+****************************************************/
+class Input{
+
+    //テキストボックス(static)
+    public static function Hidden($text,$value)
+    {
+        echo '<input type = "hidden" name = "'.$text.'" value = "'.$value.'">';
+    }
+
+    //テキストボックス(static)
+    public static function Text($size)
+    {
+        echo '<input type = "text" name="name" size = '.$size.'>';
+    }
+    //テキストエリア(static)
+    public static function Textarea($rows,$cols,$temp = "テキストを入力")
+    {
+       echo '<textarea name = "comment" rows = "'.$rows.'" cols = "'.$cols.'">'.$temp.'</textarea>';
+    }
+    //ファイル参照(static)
+    public static function File($accrpt)
+    {
+        echo '<input type="file" name="datafile" accept = "'.$accrpt.'" required>';
+    }
+
+    //ボタン(static)
+    public static function Submit($type,$text){
+        echo '<p><input type = '.$type.' value = '.$text.'></p>';
+    }
+
+    //ボタン(static)
+    public static function Image($img){
+        echo '<input type = "image" src = '.$img.'>';
+    }
+
 }
 
 /************************************************
@@ -186,8 +254,9 @@ class Imag_Slide extends File_prosess{
     public function __construct($file_path)
     {
         parent::__construct($file_path);
-        $this->fileupload();
+        $this->filerequest();
         $this->read();
+        $this->close();
 
         echo <<<EOM
             <script type="text/javascript">
@@ -212,42 +281,100 @@ class Imag_Slide extends File_prosess{
         $this->count_max++;
     }
 
+    //画像に対しての処理
+    public function filerequest()
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+            if(isset($_POST['upload']))
+            {
+                $this->fileupload();
+            }
+            else if(isset($_POST['delete']))
+            {
+                $this->filedelete();
+            }
+        }
+    }
+
     //アップロード
     public function fileupload()
     {
-        $storedir = DOCUMENT_PATH."/image/illust/";
-        if($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-            $tmp_file = $_FILES['datafile']['tmp_name'];
-            $filename = $_FILES['datafile']['name'];
-            $title_name = $_POST['name'];
-            $comment = $_POST['comment'];
+        $tmp_file = $_FILES['datafile']['tmp_name'];
+        $filename = $_FILES['datafile']['name'];
+        $title_name = $_POST['name'];
+        $comment = $_POST['comment'];
 
-            if($_FILES['datafile']['error'] ==0)
-            {
-                if(is_uploaded_file($tmp_file))
-                {
-                    if(move_uploaded_file($tmp_file,$storedir.$filename))
-                    {
-                       _alert('「'.$filename.'」をアップロードしました。');
-                       $_contents = "\n".date('Y/m/d').','.$filename.','.$title_name.','.$comment;
-                       $this->append($_contents);
-                    }
-                    else
-                    {
-                        _alert('「'.$filename.'」をアップロードできませんでした。');
-                    }
-                }
-                else
-                {
-                    _alert('ファイルが選択されていません。');
-                }
-            }
-            else
-            {
-                _alert('アップロードが失敗しました。');
-            }
+        if($_FILES['datafile']['error'] != 0)
+        {
+            _alert('アップロードが失敗しました。');
+            return;
         }
+
+        if(!is_uploaded_file($tmp_file))
+        {
+            _alert('ファイルが選択されていません。');
+            return;
+        }
+
+        if(move_uploaded_file($tmp_file,STORE_ILLUST.$filename))
+        {
+            _alert('「'.$filename.'」をアップロードしました。');
+            $_contents = "\n".date('Y/m/d').','.$filename.','.$title_name.','.$comment;
+            $this->append($_contents);
+            $this->close();
+        }
+        else
+        {
+            _alert('「'.$filename.'」をアップロードできませんでした。');
+        }
+    }
+
+    //デリート
+    public function filedelete()
+    {
+        $delete_img = $_POST['delete_img'];
+
+        $file = STORE_ILLUST.$delete_img;
+
+        if(file_exists($file))
+        {
+            unlink($file);
+            $this->write($delete_img);
+            $this->close();
+            _alert('「'.$delete_img.'」を削除しました');
+        }
+
+        else{
+            _alert('「'.$delete_img.'」が存在しません');
+        }
+
+    }
+
+    //対象の画像の情報を削除
+    public function write_process($str)
+    {
+        $file_str = null;
+        $count = 1;
+        $count_max = 0;
+        for($count_max = 0;fgets($this->fp);$count_max++);
+        rewind($this->fp);
+        while($line = fgets($this->fp))
+        {
+            list($date,$img_dr,$name,$comment) = explode(",",$line);
+            if($img_dr != $str)
+            {
+                if($count >= ($count_max - 1))
+                {
+                    $line = rtrim($line);
+                }
+                $file_str .= $line;
+            }
+            $count++;
+        }
+        ftruncate($this->fp,0);
+        rewind($this->fp);
+        return $file_str;
     }
 
     //イメージの表示(HOME)
@@ -256,34 +383,28 @@ class Imag_Slide extends File_prosess{
         $max = $this->count_max-1;
 
         echo '<div class = "frame"><div class = "slide">';
-        for($i = $max,$j = 0;$i >= 0;$i--,$j++)
+        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
         {
             $this->list_reference($i,$img,$comment,$name);
             $this->img->create($img,$comment,$j);
-            if($j > 3)
-            {
-                break;
-            }
         }
         echo '</div>';
         create_submit('submit right','scroll_right',1,PLUS,">>");
         create_submit('submit left','scroll_left',$max,MINUS,"<<");
 
         echo '<div class = "botton_frame">';
-        for($i = $max,$j = 0;$i >= 0;$i--,$j++)
+        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
         {
             create_submit('botton','botton'.$j,$j,$j,"");
-            if($j > 3)
-            {
-                break;
-            }
         }
         echo '</div></div>';
     }
 
     //イメージの表示(gallary)
-    public function Show_Gallery()
+    public function Show_Gallery($mode)
     {
+        $box = new Delete_Form(GALLERY_SERVER,'delete');
+
         $max = $this->count_max - 1;
 
         echo '<div class = "gallary">';
@@ -292,12 +413,18 @@ class Imag_Slide extends File_prosess{
             $this->list_reference($i,$img,$comment,$name);
             echo '<div class = "image_text">';
                 $this->img->create($img,$comment);
+                if($mode == 'Debug')
+                {
+                    $box->get_img($img);
+                    $box->create();
+                }
                 echo "<p>{$name}</p>";
             echo '</div>';
         }
         echo '</div>';
     }
 
+    //配列の要素を取得
     public function list_reference($num,&$img,&$comment,&$name)
     {
         $img        = $this->image_list[$num]['img'];
@@ -317,11 +444,18 @@ class Header extends File_prosess
         parent::__construct($file_path);
         $this->img = new Image('logo');
     }
+
     public function read_process($line)
     {
         list($url,$img_dr,$name) = explode(" ,",$line);
         $this->img->create_URL($url,$img_dr,$name);
     }
+
+    public function write_process($str)
+    {
+        return $str;
+    }
+
     public function print_title($mode)
     {
         if($mode == "Debug")
@@ -336,11 +470,69 @@ class Header extends File_prosess
 }
 
 /************************************************
+Profileクラス
+*************************************************/
+class Profile extends File_prosess{
+
+    public function read_process($line)
+    {
+        echo '<li>'.$line.'</li>';
+    }
+
+    public function write_process($str)
+    {
+        return $str;
+    }
+}
+
+/************************************************
+画像アップロード用フォーム作成クラス
+*************************************************/
+class Datafile_Form extends Form{
+
+    public function create_input()
+    {
+        echo '<p>タイトル：<br>';
+        Input::Text(40).'</p>';
+        echo '<p>説明：<br>';
+        Input::Textarea(4,40).'</p>';
+        echo '<p>ファイル：<br>';
+        Input::File(".png, .jpg, .jpeg").'</p>';
+        Input::Submit("submit","送信");
+    }
+}
+
+/************************************************
+画像アップロード用フォーム作成クラス
+*************************************************/
+class Delete_Form extends Form
+{
+    public $img;
+
+    public function get_img($img){
+        $this->img = $img;
+    }
+
+    public function create_input()
+    {
+        Input::Hidden("delete_img",$this->img);
+        $icon = "/php_test/image/icon/delete_box.jpeg";
+        Input::Image($icon);
+    }
+}
+
+/************************************************
+*
+function
+*
+*************************************************/
+
+/************************************************
 　submitの作成
  *************************************************/
 function create_submit($style,$id,$num,$add,$text)
 {
-    $url = "/php_test/contents/contents.php#";
+    $url = CONTENTS_ID;
     if($style != "botton"){
         echo <<< END_OF_TEXT
             <a id = "$id" href = "$url$num" target="contents">
@@ -355,43 +547,6 @@ function create_submit($style,$id,$num,$add,$text)
             </a>
         END_OF_TEXT;
     }
-}
-
-/************************************************
-Profileクラス
-*************************************************/
-class Profile extends File_prosess{
-
-    public function read_process($line)
-    {
-        echo '<li>'.$line.'</li>';
-    }
-}
-
-/************************************************
-*
-function
-*
-*************************************************/
-
-/************************************************
-画像アップロード用フォームの作成
-*************************************************/
-function datafile_upload(){
-    echo <<< EOT
-    <div class = "upload">
-        <form action = "/php_test/contents/gallery_server.php" method = "post"
-        target = "contents" enctype="multipart/form-data"　name = "upload">
-            <p>タイトル：<br>
-            <input type="text" name="name" size="40"></p>
-            <p>説明：<br>
-            <textarea name="comment" rows="4" cols="30">テキストを入力</textarea></p>
-            <p>ファイル<br>
-            <input type="file" name="datafile"　accept=".png, .jpg, .jpeg" required></p>
-            <p><input type="submit" value="送信"></p>
-        <form>
-    </div>
-    EOT;
 }
 
 /************************************************
@@ -420,7 +575,6 @@ function create_menu($mode)
     echo '<div class = "menu">';
     if($mode =="Debug"){
         $array = array(
-            'TOP' => 'contents_server.php',
             'PROFILE' => 'profile_server.php',
             'GALLERY' => 'gallery_server.php',
         );
@@ -506,10 +660,11 @@ function main_contents($content_name,$mode)
             create_profile();
             break;
         case "GALLERY":
-            $Image->Show_Gallery();
+            $Image->Show_Gallery($mode);
             if($mode == "Debug")
             {
-                datafile_upload();
+                $form   = new Datafile_Form(GALLERY_SERVER,'upload',ENCODE_FILE);
+                $form->create();
             }
             break;
         default:
