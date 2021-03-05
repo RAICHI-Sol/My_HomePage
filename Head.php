@@ -4,6 +4,7 @@ define
 ***********************************************/
 //php_path
 define('GALLERY_SERVER',"/php_test/contents/gallery_server.php");
+define('PROFILE_SERVER',"/php_test/contents/profile_server.php");
 define('CONTENTS_ID',"/php_test/contents/contents.php#");
 
 //csv_file_path
@@ -24,6 +25,9 @@ define('ENCODE_FILE',"multipart/form-data");
 define('PLUS',1);
 define('MINUS',-1);
 
+/**********************************************
+include
+***********************************************/
 echo <<< END_OF_TEXT
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/php_test/style.css">

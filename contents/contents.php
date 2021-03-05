@@ -10,7 +10,7 @@ Transitional" "http://www.w3.org/TR/html4/frameset.dtd">
          $mode = "Client";
          main_contents("HOME",$mode);
       ?>
-      <script src="/php_test/change_img.js"></script>
+      <script src="/php_test/contents_ivent.js"></script>
       <script src="/php_test/scroll_ivent.js"></script>
    </body>
 </html>
