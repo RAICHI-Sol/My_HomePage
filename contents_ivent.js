@@ -3,16 +3,25 @@ gloval
 *************************************************/
 var url = "/php_test/contents/contents.php#";
 var now_num = 0;
+var target_r;
+var target_l;
 
 /************************************************
+*
 image_ivent
+*
 *************************************************/
+//カウントの調整
 function Count_Adj(count)
 {
-    if (count < 0){
-        return count_max-1;
+    if(count_max >= 5){
+        count_max = 5;
     }
-    else if(count > count_max-1){
+
+    if (count < 0){
+        return count_max - 1;
+    }
+    else if(count > count_max - 1){
         return 0;
     }
     else{
@@ -20,24 +29,41 @@ function Count_Adj(count)
     }
 }
 
-function Chenge_num(num,id)
+//画像の遷移(ボタン)
+function Chenge_button(num)
 {
-    var taget_r = document.getElementById("scroll_right");
-    var taget_l = document.getElementById("scroll_left");
+    clearInterval(time);
+    now_num = Count_Adj(num);
+    window.open(url + now_num,'contents');
+    target_r = url + Count_Adj(now_num +1);
+    target_l = url + Count_Adj(now_num -1);
+    Button_light();
+    time = setInterval(Change_image_Interval, 3000);
+}
 
-    if(id == "botton"){
-        now_num = Count_Adj(num);
-        taget_r.href = url + Count_Adj(now_num +1);
-        taget_l.href = url + Count_Adj(now_num -1);
+//画像の遷移(矢印ボタン)
+function Chenge_scroll(num)
+{
+    clearInterval(time);
+    target_r = url + Count_Adj(now_num +1);
+    target_l = url + Count_Adj(now_num -1);
+    if(num == 1)
+    {
+        window.open(target_r,'contents');
     }
-    else{
-        taget_r.href = url + Count_Adj(now_num +1);
-        taget_l.href = url + Count_Adj(now_num -1);
-        now_num = Count_Adj(now_num + num);
+    else
+    {
+        window.open(target_l,'contents');
     }
+    now_num = Count_Adj(now_num + num);
+    Button_light();
+    time = setInterval(Change_image_Interval, 3000);
+}
 
+//ボタンの遷移
+function  Button_light() {
     for(i = 0;i < count_max;i++){
-        var botton_num = $("#botton" + i);
+        var botton_num = $("#button" + i);
 
         if(i == now_num){
             botton_num.addClass('now');
@@ -48,9 +74,11 @@ function Chenge_num(num,id)
     }
 }
 
-
+//タイマー処理
 var Change_image_Interval = function(){
-    var new_num = now_num + 1;
-    window.open(url + Count_Adj(new_num),"contents");
-    Chenge_num(new_num,"timer");
+    now_num = Count_Adj(now_num + 1);
+    $('.slide').scrollLeft(300 * now_num);
+    Button_light();
 };
+
+var time = setInterval(Change_image_Interval, 3000);

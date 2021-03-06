@@ -53,6 +53,7 @@ html{
     -webkit-appearance: none;
     -webkit-text-size-adjust: 100%;
     margin:1px;
+    -webkit-overflow-scrolling: touch;
 }
 body.main_flame{
     position: relative;
@@ -303,17 +304,24 @@ ImageSlide_Style
         overflow-x:auto;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
-        img{
+        overscroll-behavior-x: contain;
+        .flame {
             scroll-snap-align: center;
-            @include width_height(400px,400px);
-            margin:5px;
-            object-fit:cover;
-            border:solid 3px white;
-            transition-duration: 0.6s;
-            &:hover{
-                filter:brightness(50%);
+            @include width_height(300px,400px);
+            margin: 10px auto;
+            background: #d3d2d2;
+            border: solid 5px #555353;
+            img{
+                object-fit:contain;
+                @include width_height(300px,380px);
+                margin:10px auto;
+                transition-duration: 0.6s;
+                &:hover{
+                    filter:brightness(50%);
+                }
             }
         }
+
         &::-webkit-scrollbar{
             @include width_height(0,0);
         }
@@ -403,7 +411,7 @@ Gallary_Style
         display:block;
         img{
             @include width_height(100%,100%);
-            object-fit:cover;
+            object-fit:contain;
             transition-duration: 0.6s;
         }
         p{
@@ -483,7 +491,7 @@ Gallary_Style
                 font-size:15px;
                 transition-duration: 0.4s;
                 &.title{
-                    font-size:25px;
+                    font-size:20px;
                     &::before{
                         content: '『';
                     }
@@ -493,7 +501,6 @@ Gallary_Style
                 }
             }
         }
-        
     }
 }
 

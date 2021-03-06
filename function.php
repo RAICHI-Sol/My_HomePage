@@ -398,17 +398,19 @@ class Imag_Slide extends File_prosess{
         echo '<div class = "frame"><div class = "slide">';
         for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
         {
+            echo '<div class = "flame">';
             $this->list_reference($i,$img,$comment,$name,$date);
             $this->img->create($img,$comment,$j);
+            echo '</div>';
         }
         echo '</div>';
-        create_submit('submit right','scroll_right',1,PLUS,">>");
-        create_submit('submit left','scroll_left',$max,MINUS,"<<");
+        create_submit('submit right','scroll_right',PLUS,">>");
+        create_submit('submit left','scroll_left',MINUS,"<<");
 
         echo '<div class = "botton_frame">';
         for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
         {
-            create_submit('botton','botton'.$j,$j,$j,"");
+            create_submit('button','button'.$j,$j,"");
         }
         echo '</div></div>';
     }
@@ -624,7 +626,7 @@ class Update_Form extends Form
 {
     public $contents;
     public $usrname;
-    
+
     //プロフィールの取得
     public function get_profile($contents)
     {
@@ -658,21 +660,16 @@ function
 /************************************************
 　submitの作成
  *************************************************/
-function create_submit($style,$id,$num,$add,$text)
+function create_submit($style,$id,$add,$text)
 {
-    $url = CONTENTS_ID;
-    if($style != "botton"){
+    if($style != "button"){
         echo <<< END_OF_TEXT
-            <a id = "$id" href = "$url$num" target="contents">
-            <input type = "button" class = "$style" onclick = "Chenge_num($add,'scroll');" value = "$text">
-            </a>
+            <input type = "button" class = "$style" onclick = "Chenge_scroll($add);" value = "$text">
         END_OF_TEXT;
     }
     else{
         echo <<< END_OF_TEXT
-            <a href = "$url$num" target = "contents">
-            <input type = "button" id = "$id" onclick = "Chenge_num($add,'botto');" value = "$text">
-            </a>
+            <input type = "button" id = "$id" onclick = "Chenge_button($add);" value = "$text">
         END_OF_TEXT;
     }
 }
