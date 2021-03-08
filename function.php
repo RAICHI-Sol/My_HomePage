@@ -504,7 +504,7 @@ class Header extends File_prosess
         }
         else
         {
-            echo '<h1>RAICHI_Official</h1>';
+            echo '<h1>RAICHIのホームページ</h1>';
         }
     }
 }

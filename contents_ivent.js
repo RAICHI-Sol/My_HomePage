@@ -1,7 +1,6 @@
 /************************************************
 gloval
 *************************************************/
-var url = "/php_test/contents/contents.php#";
 var now_num = 0;
 var target_r;
 var target_l;
@@ -34,9 +33,9 @@ function Chenge_button(num)
 {
     clearInterval(time);
     now_num = Count_Adj(num);
-    window.open(url + now_num,'contents');
-    target_r = url + Count_Adj(now_num +1);
-    target_l = url + Count_Adj(now_num -1);
+    $('.slide').animate({scrollLeft:300 * now_num},300,'linear');
+    target_r = Count_Adj(now_num +1);
+    target_l = Count_Adj(now_num -1);
     Button_light();
     time = setInterval(Change_image_Interval, 3000);
 }
@@ -45,15 +44,15 @@ function Chenge_button(num)
 function Chenge_scroll(num)
 {
     clearInterval(time);
-    target_r = url + Count_Adj(now_num +1);
-    target_l = url + Count_Adj(now_num -1);
+    target_r = Count_Adj(now_num +1);
+    target_l =  Count_Adj(now_num -1);
     if(num == 1)
     {
-        window.open(target_r,'contents');
+        $('.slide').animate({scrollLeft:300 * target_r},300,'linear');
     }
     else
     {
-        window.open(target_l,'contents');
+        $('.slide').animate({scrollLeft:300 * target_l},300,'linear');
     }
     now_num = Count_Adj(now_num + num);
     Button_light();
@@ -77,7 +76,7 @@ function  Button_light() {
 //タイマー処理
 var Change_image_Interval = function(){
     now_num = Count_Adj(now_num + 1);
-    $('.slide').scrollLeft(300 * now_num);
+    $('.slide').animate({scrollLeft:300 * now_num},300,'linear');
     Button_light();
 };
 

@@ -442,8 +442,8 @@ ImageSlide_Style
   width: 80%;
   height: 80%;
   margin: 0 auto;
-  -webkit-transition-duration: 0.6s;
-          transition-duration: 0.6s;
+  -webkit-transition-duration: 1s;
+          transition-duration: 1s;
   overflow: hidden;
   overflow-x: auto;
   -ms-scroll-snap-type: x mandatory;
