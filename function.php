@@ -18,47 +18,70 @@ abstract class File_prosess{
     }
 
     //ファイルの読み込み
-    public function read(){
+    public function read()
+    {
         $this->fp = fopen($this->file_path,"r");
-        if($this->lock() == 0)
-        {
-            while($line = fgets($this->fp)){
+        if($this->lock() == 0):
+            while($line = fgets($this->fp)):
                 $this->read_process($line);
-            }
+            endwhile;
             $this->unlock();
-        }
+        endif;
     }
 
     //ファイルのテキスト追加
-    public function append($str){
+    public function append($str)
+    {
         $this->fp = fopen($this->file_path,"a");
-        if($this->lock() == 0){
+        if($this->lock() == 0):
             fwrite($this->fp,$str);
             $this->unlock();
-        }
+        endif;
     }
 
     //ファイルの書き込み
-    public function write($str){
+    public function write($str)
+    {
         $this->fp = fopen($this->file_path,"r+");
 
-        if($this->lock() == 0){
+        if($this->lock() == 0):
             $_contents = $this->write_process($str);
             fwrite($this->fp,$_contents);
             $this->unlock();
-        }
+        endif;
     }
 
     //ファイルロック
     public function lock()
     {
-        if(!flock($this->fp,LOCK_EX)){
+        if(!flock($this->fp,LOCK_EX)):
             _alert("ファイルロックに失敗しました。");
             return 1;
-        }
-        else{
+        else:
             return 0;
+        endif;
+    }
+
+    //ファイルのアップロードのチェック
+    public function fileupload_check($tmp_file,$store_dir,$filename)
+    {
+        if($_FILES['datafile']['error'] != 0){
+            _alert('アップロードが失敗しました。');
+            return 1;
         }
+
+        if(!is_uploaded_file($tmp_file)){
+            _alert('ファイルが選択されていません。');
+            return 1;
+        }
+
+        if(move_uploaded_file($tmp_file,$store_dir.$filename)):
+            _alert('「'.$filename.'」をアップロードしました。');
+            return 0;
+        else:
+            _alert('「'.$filename.'」をアップロードできませんでした。');
+            return 1;
+        endif;
     }
 
     //ファイルアンロック
@@ -98,13 +121,12 @@ abstract class Form{
     //フォームの作成
     public function create(){
         echo <<< EOT
-            <div class = "{$this->f_name}">
             <form action = "{$this->action}" method = "post"
             target = "contents" enctype = "{$this->enctype}">
         EOT;
         Input::Hidden($this->f_name,1);
         $this->create_input();
-        echo '</form></div>';
+        echo '</form>';
     }
 
     //抽象メソッド
@@ -129,7 +151,7 @@ class Image{
     public function create($img_name,$comment,$id = "none")
     {
         echo <<< END_OF_TEXT
-            <img src = "/php_test/image/$this->dir_file/$img_name" alt = "$comment"
+            <img src = "/php_test/image/{$this->dir_file}/$img_name" alt = "$comment"
         END_OF_TEXT;
         echo $this->add_attribute("class",$this->style);
         echo $this->add_attribute("id",$id);
@@ -170,12 +192,9 @@ class Input{
     //テキストボックス(static)
     public static function Text($size,$holder,$temp = 'none')
     {
-        echo '<input type = "text" name = "name" size = "'.$size.'"';
-        if($temp != 'none')
-        {
-            echo 'value = "'.$temp.'"';
-        }
-        echo 'placeholder = "'.$holder.'" required>';
+        echo '<input type = "text" name = "name" size = "'.$size.'"
+        placeholder = "'.$holder.'" required ';
+        echo ($temp != 'none') ?'value = "'.$temp.'">':'>';
     }
     //テキストエリア(static)
     public static function Textarea($rows,$cols,$temp = "テキスト")
@@ -186,14 +205,17 @@ class Input{
        EOT;
     }
     //ファイル参照(static)
-    public static function File($accrpt)
+    public static function File($accrpt,$id,$required = "none")
     {
-        echo '<input type="file" name="datafile" accept = "'.$accrpt.'" required>';
+        echo <<<EOT
+            <input type="file" id = "$id" name="datafile" accrpt = "$accrpt"
+        EOT;
+        echo ($required != 'none') ?'required>':'>';
     }
 
     //ボタン(static)
     public static function Submit($type,$text){
-        echo '<p><input type = '.$type.' value = '.$text.'></p>';
+        echo '<input type = '.$type.' value = '.$text.'>';
     }
 
     //画像ボタン(static)
@@ -232,10 +254,9 @@ class New_News extends File_prosess{
     public function write_process($str)
     {
         $_contents = null;
-        while($line = fgets($this->fp))
-        {
+        while($line = fgets($this->fp)):
             $_contents .= $line;
-        }
+        endwhile;
         rewind($this->fp);
         return date('Y/m/d').','.$str."\n".$_contents;
     }
@@ -245,10 +266,9 @@ class New_News extends File_prosess{
         echo '<h1>News</h1>';
         echo '<div class = "Scrollarea">';
 
-        foreach($this->News_list as $str)
-        {
-            echo  '<p>'.$str.'</p>';
-        }
+        foreach($this->News_list as $str):
+            tag_p($str);
+        endforeach;
         echo '</div>';
     }
 }
@@ -302,19 +322,14 @@ class Imag_Slide extends File_prosess{
         $count_max = 0;
         for($count_max = 0;fgets($this->fp);$count_max++);
         rewind($this->fp);
-        while($line = fgets($this->fp))
-        {
+        while($line = fgets($this->fp)):
             list($date,$img_dr,$name,$comment) = explode(",",$line);
-            if($img_dr != $str)
-            {
-                if($count >= ($count_max - 1))
-                {
-                    $line = rtrim($line);
-                }
+            if($img_dr != $str):
+                $line = ($count >= ($count_max - 1)) ? rtrim($line) : $line;
                 $file_str .= $line;
-            }
+            endif;
             $count++;
-        }
+        endwhile;
         ftruncate($this->fp,0);
         rewind($this->fp);
         return $file_str;
@@ -325,14 +340,11 @@ class Imag_Slide extends File_prosess{
     {
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
-            if(isset($_POST['upload']))
-            {
+            if(isset($_POST['upload'])):
                 $this->fileupload();
-            }
-            else if(isset($_POST['delete']))
-            {
+            elseif(isset($_POST['delete'])):
                 $this->filedelete();
-            }
+            endif;
         }
     }
 
@@ -341,32 +353,14 @@ class Imag_Slide extends File_prosess{
     {
         $tmp_file = $_FILES['datafile']['tmp_name'];
         $filename = $_FILES['datafile']['name'];
-        $title_name = $_POST['name'];
-        $comment = $_POST['comment'];
 
-        if($_FILES['datafile']['error'] != 0)
-        {
-            _alert('アップロードが失敗しました。');
-            return;
-        }
-
-        if(!is_uploaded_file($tmp_file))
-        {
-            _alert('ファイルが選択されていません。');
-            return;
-        }
-
-        if(move_uploaded_file($tmp_file,STORE_ILLUST.$filename))
-        {
-            _alert('「'.$filename.'」をアップロードしました。');
+        if($this->fileupload_check($tmp_file,STORE_ILLUST,$filename)==0):
+            $title_name = $_POST['name'];
+            $comment = $_POST['comment'];
             $_contents = "\n".date('Y/m/d').','.$filename.','.$title_name.','.$comment;
             $this->append($_contents);
             $this->close();
-        }
-        else
-        {
-            _alert('「'.$filename.'」をアップロードできませんでした。');
-        }
+        endif;
     }
 
     //イラストのデリート
@@ -376,18 +370,14 @@ class Imag_Slide extends File_prosess{
 
         $file = STORE_ILLUST.$delete_img;
 
-        if(file_exists($file))
-        {
+        if(file_exists($file)):
             unlink($file);
             $this->write($delete_img);
             $this->close();
             _alert('「'.$delete_img.'」を削除しました');
-        }
-
-        else{
+        else:
             _alert('「'.$delete_img.'」が存在しません');
-        }
-
+        endif;
     }
 
     //イメージの表示(HOME)
@@ -395,23 +385,22 @@ class Imag_Slide extends File_prosess{
     {
         $max = $this->count_max-1;
 
-        echo '<div class = "frame"><div class = "slide">';
-        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
-        {
+        echo '<div class = "frame">';
+        echo '<div class = "slide">';
+        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++):
             echo '<div class = "flame">';
-            $this->list_reference($i,$img,$comment,$name,$date);
-            $this->img->create($img,$comment,$j);
+                $this->list_reference($i,$img,$comment,$name,$date);
+                $this->img->create($img,$comment,$j);
             echo '</div>';
-        }
+        endfor;
         echo '</div>';
         create_submit('submit right','scroll_right',PLUS,">>");
         create_submit('submit left','scroll_left',MINUS,"<<");
 
         echo '<div class = "botton_frame">';
-        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++)
-        {
+        for($i = $max,$j = 0;$i >= 0 && $j < 5;$i--,$j++):
             create_submit('button','button'.$j,$j,"");
-        }
+        endfor;
         echo '</div></div>';
     }
 
@@ -423,22 +412,22 @@ class Imag_Slide extends File_prosess{
         $max = $this->count_max - 1;
 
         echo '<div class = "gallary">';
-        for($i = $max;$i >= 0;$i--)
-        {
-            $id = 'img'.$i;
+        for($i = $max;$i >= 0;$i--):
             $this->list_reference($i,$img,$comment,$name,$date);
-            echo '<div class = "image_text"><label for = "'.$id.'">';
+            echo <<< EOT
+                <div class = "image_text">
+                <label for = "img$i">
+            EOT;
             $this->img->create($img,$comment);
-            if($mode == 'Debug')
-            {
+            if($mode == 'Debug'):
                 $box->get_img($img);
                 $box->create();
-            }
-            echo '<p>'.$name.'</p>';
+            endif;
+            tag_p($name);
             Input::Checkbox('img'.$i);
             echo '</div>';
-            $this->image_large($i,$id);
-        }
+            $this->image_large($i,'img'.$i);
+        endfor;
         echo '</div>';
     }
 
@@ -453,8 +442,7 @@ class Imag_Slide extends File_prosess{
         $this->img->create($img,$comment);
         echo <<<EOT
             <p><span class = "title">$name</span>
-            <span>$date</span></p>
-            </div>
+            <span>$date</span></p></div>
         EOT;
     }
 
@@ -498,14 +486,7 @@ class Header extends File_prosess
     //タイトルの表示
     public function print_title($mode)
     {
-        if($mode == "Debug")
-        {
-            echo '<h1>(開発者用)</h1>';
-        }
-        else
-        {
-            echo '<h1>RAICHIのホームページ</h1>';
-        }
+        echo ($mode == "Debug")?'<h1>(開発者用)</h1>':'<h1>RAICHIのホームページ</h1>';
     }
 }
 
@@ -516,6 +497,7 @@ class Profile extends File_prosess{
 
     public $profile = null;
     public $usrname = null;
+    public $image;
     public $count = 1;
 
     //プロフィールの受け渡し
@@ -530,52 +512,99 @@ class Profile extends File_prosess{
         return $this->usrname;
     }
 
+    //イメージの受け渡し
+    public function put_image()
+    {
+        return $this->image;
+    }
+
     //抽象メソッドの具現化(read_process)
     public function read_process($line)
     {
-        if($this->count == 1){
-            list($name_label,$name) = explode(":",rtrim($line));
+        if($this->count == 1):
+            list($label,$name) = explode(":",rtrim($line));
             $this->usrname = $name;
-            echo '<li>'.$line.'</li>';
-        }
-        else{
+        elseif($this->count == 2):
+            list($label,$img) = explode(":",rtrim($line));
+            $this->image = $img;
+        else:
             $this->profile .= $line;
-            echo '<p>'.$line.'</p>';
-        }
+        endif;
         $this->count++;
     }
 
     //抽象メソッドの具現化(write_process)
     public function write_process($str)
     {
+        $_contents = null;
+        $_text =null;
+        $count = 0;
+        while($line = fgets($this->fp)):
+            switch($count):
+                case 0:
+                    list($label,$name) = explode(":",rtrim($line));
+                    $this->usrname = ($this->usrname == "") ? $name:$this->usrname;
+                    $_contents .= 'name:'.$this->usrname.PHP_EOL;
+                    break;
+                case 1:
+                    list($label,$img) = explode(":",rtrim($line));
+                    $this->image = ($this->image == "") ? $img:$str;
+                    $_contents .= 'image:'.$this->image;
+                    break;
+                default:
+                    $_text .= $line;
+                    break;
+            endswitch;
+            $count++;
+        endwhile;
+
+        if($this->profile != ""):
+            $_contents .= PHP_EOL.$this->profile;
+            $this->profile = "";
+        elseif($_text != ""):
+            $_contents .= PHP_EOL.$_text;
+        endif;
+
         ftruncate($this->fp,0);
         rewind($this->fp);
-        return $str;
+        return $_contents;
     }
 
     //サーバーからの受信
     public function request()
     {
-        if($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-            if(isset($_POST['update']))
-            {
+        if($_SERVER['REQUEST_METHOD'] == 'POST'):
+            if(isset($_POST['update'])):
                 $this->fileupdate();
-            }
-        }
+            endif;
+            $this->write($this->image);
+            $this->close();
+        endif;
     }
 
-    //プロフィールの更新
+    //画像のアップロード
     public function fileupdate(){
-        $usrname = $_POST['name'];
-        $profile = $_POST['comment'];
-        $_contents = null;
+        if($_FILES['datafile']['name'] != ''):
+            $tmp_file = $_FILES['datafile']['tmp_name'];
+            $filename = $_FILES['datafile']['name'];
 
-        $_contents .= 'name:'.$usrname.PHP_EOL;
-        $_contents .= $profile;
-        $this->write($_contents);
-        $this->close();
-        _alert('プロフィールを更新しました。');
+            if($this->fileupload_check($tmp_file,STORE_ICON,$filename) == 0):
+                $this->image = $filename;
+            endif;
+        endif;
+        $this->usrname = $_POST['name'];
+        $this->profile = $_POST['comment'];
+    }
+
+    //プロフィールの表示
+    public function Show_Profile(){
+        echo '<div class = "profile"><ul>';
+        echo '<li>'.$this->usrname.'</li>';
+        tag_p($this->profile);
+        echo '</ul>';
+        $IMG = new Image('icon');
+        $IMG->create($this->image,'アイコン');
+        echo '</div>';
     }
 }
 
@@ -587,14 +616,30 @@ class Datafile_Form extends Form{
     //抽象メソッド(create_input)
     public function create_input()
     {
-        echo '<p id = "upload">タイトル：※<br>';
-        Input::Text(40,'タイトル').'</p>';
-        echo '<p>説明：<br>';
-        Input::Textarea(4,40).'</p>';
-        echo '<p>ファイル：※<br>';
-        Input::File(".png, .jpg, .jpeg").'</p>';
+        echo '<p id = "upload">【 TITLE 】</p>';
+        Input::Text(40,'タイトル');
+        echo '<p>【 COMMENT 】</p>';
+        Input::Textarea(4,40);
+        echo '<p>【 IMAGE 】</p>';
+        Input::File(".png, .jpg, .jpeg",'upload_data','req');
+        echo <<<EOT
+        <label for = "upload_data">
+            ファイルアップロード
+        </label>
+        <span id = "image_name">選択されていません。</span><br>
+        EOT;
         Input::Submit("submit","送信");
         Input::Submit("reset","リセット");
+    }
+
+    //イメージのプレビュー
+    public function prev_image()
+    {
+        echo <<< EOT
+            <div class = "prev">
+                <img id = "preview">
+            </div>
+        EOT;
     }
 }
 
@@ -606,16 +651,17 @@ class Delete_Form extends Form
     public $img;
 
     //イメージの取得
-    public function get_img($img){
+    public function get_img($img)
+    {
         $this->img = $img;
     }
 
     //抽象メソッド(create_input)
     public function create_input()
     {
+        global $icon;
         Input::Hidden("delete_img",$this->img);
-        $icon = "/php_test/image/icon/delete_box.jpeg";
-        Input::Image($icon);
+        Input::Image($icon['delete_box']);
     }
 }
 
@@ -626,6 +672,7 @@ class Update_Form extends Form
 {
     public $contents;
     public $usrname;
+    public $image;
 
     //プロフィールの取得
     public function get_profile($contents)
@@ -639,15 +686,40 @@ class Update_Form extends Form
         $this->usrname = $usrname;
     }
 
+    //イメージの取得
+    public function get_image($image)
+    {
+        $this->image = $image;
+    }
+
     //抽象メソッド(create_input)
     public function create_input()
     {
-        echo '<p>ユーザーネーム：※<br>';
-        Input::Text(40,'ユーザーネーム',$this->usrname).'</p>';
-        echo '<p>プロフィール：※<br>';
-        Input::Textarea(8,40,$this->contents).'</p>';
+        echo '<p>【 USR_NAME 】</p>';
+        Input::Text(40,'ユーザーネーム',$this->usrname);
+        echo '<p>【 PROFILE 】</p>';
+        Input::Textarea(8,40,$this->contents);
+        echo '<br>';
+        echo '<p>【 IMAGE 】</p>';
+        Input::File(".png, .jpg, .jpeg",'updata_data');
+        echo <<<EOT
+        <label for = "updata_data">
+            ファイルアップロード
+        </label>
+        <span id = "image_name1">選択されていません。</span><br>
+        EOT;
         Input::Submit("submit","送信");
         Input::Submit("reset","リセット");
+    }
+
+    //イメージのプレビュー
+    public function prev_image()
+    {
+        echo <<< EOT
+            <div class = "prev">
+                <img id = "preview_prof" src = "/php_test/image/icon/{$this->image}">
+            </div>
+        EOT;
     }
 }
 
@@ -662,16 +734,15 @@ function
  *************************************************/
 function create_submit($style,$id,$add,$text)
 {
-    if($style != "button"){
+    if($style != "button"):
         echo <<< END_OF_TEXT
             <input type = "button" class = "$style" onclick = "Chenge_scroll($add);" value = "$text">
         END_OF_TEXT;
-    }
-    else{
+    else:
         echo <<< END_OF_TEXT
             <input type = "button" id = "$id" onclick = "Chenge_button($add);" value = "$text">
         END_OF_TEXT;
-    }
+    endif;
 }
 
 /************************************************
@@ -679,6 +750,13 @@ function create_submit($style,$id,$add,$text)
  *************************************************/
 function _alert($str){
     echo '<script>alert("'.$str.'");</script>';
+}
+
+/************************************************
+タグp
+*************************************************/
+function tag_p($str){
+    echo '<p>'.$str.'</p>';
 }
 
 /************************************************
@@ -698,23 +776,22 @@ function change_page($page,$text)
 function create_menu($mode)
 {
     echo '<div class = "menu">';
-    if($mode =="Debug"){
+    if($mode =="Debug"):
         $array = array(
             'PROFILE' => 'profile_server.php',
             'GALLERY' => 'gallery_server.php',
         );
-    }
-    else{
+    else:
         $array = array(
             'TOP' => 'contents.php',
             'PROFILE' => 'profile.php',
             'GALLERY' => 'gallery.php',
         );
-    }
-    foreach($array as $name => $page)
-    {
+    endif;
+
+    foreach($array as $name => $page):
         change_page($page,$name);
-    }
+    endforeach;
     echo '</div>';
 }
 
@@ -739,23 +816,26 @@ function create_header($mode)
  *************************************************/
 function create_profile($mode)
 {
-    echo '<ul>';
-    $prof = new Profile(PROF_PATH);
-    $prof->request();
-    $prof->read();
-    $prof->close();
-    $profile = $prof->put_profile();
-    $name = $prof->put_usrname();
-    echo '</ul>';
+    $PROF = new Profile(PROF_PATH);
+    $PROF->request();
+    $PROF->read();
+    $PROF->close();
+    $PROF->Show_Profile();
+    $profile = $PROF->put_profile();
+    $name = $PROF->put_usrname();
+    $img  = $PROF->put_image();
 
     //サーバー専用のフォーム
-    if($mode == "Debug")
-    {
-        $form = new Update_Form(PROFILE_SERVER,'update');
+    if($mode == "Debug"):
+        $form = new Update_Form(PROFILE_SERVER,'update',ENCODE_FILE);
+        echo '<div class = "update">';
         $form->get_profile($profile);
         $form->get_usrname($name);
+        $form->get_image($img);
         $form->create();
-    }
+        $form->prev_image();
+        echo '</div>';
+    endif;
 }
 
 /************************************************
@@ -763,11 +843,20 @@ function create_profile($mode)
  *************************************************/
 function create_footer()
 {
-    echo <<< END_OF_TEXT
-    <footer>
-        <p>Copyright © 2021 RAICHI All Rights Reserved.</p>
-    </footer>
-    END_OF_TEXT;
+    echo '<footer>';
+        tag_p('Copyright © 2021 RAICHI All Rights Reserved.');
+    echo '</footer>';
+}
+
+/************************************************
+　サーバー側のフォームの作成(gallery)
+*************************************************/
+function create_gallery_server(){
+    $form   = new Datafile_Form(GALLERY_SERVER,'upload',ENCODE_FILE);
+    echo '<div class = "upload">';
+    $form->create();
+    $form->prev_image();
+    echo '</div>';
 }
 
 /************************************************
@@ -799,11 +888,9 @@ function main_contents($content_name,$mode)
         case "GALLERY":
             $Image->Show_Gallery($mode);
             //サーバー専用のフォーム
-            if($mode == "Debug")
-            {
-                $form   = new Datafile_Form(GALLERY_SERVER,'upload',ENCODE_FILE);
-                $form->create();
-            }
+            if($mode == "Debug"):
+                create_gallery_server();
+            endif;
             break;
         default:
             break;

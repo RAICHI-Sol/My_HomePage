@@ -15,3 +15,16 @@ function  Checkbox(id) {
         image_large.classList.remove('open');
     }
 }
+
+$('#upload_data').on('change',function (event){
+    var reader = new FileReader();
+    var file = event.target.files[0];
+
+    reader.onload = function (event)
+    {
+        $("#preview").attr('src', event.target.result);
+        file_name = $('#upload_data').prop('files')[0].name;
+        $("#image_name").text(file_name);
+    }
+    reader.readAsDataURL(file);
+});

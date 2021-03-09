@@ -16,6 +16,8 @@ define('PROF_PATH',DOCUMENT_PATH.'/file/prof.csv');
 
 //file_path
 define('STORE_ILLUST',DOCUMENT_PATH."/image/illust/");
+define('STORE_ICON',DOCUMENT_PATH."/image/icon/");
+define('FILE_ICON',"/php_test/image/icon/");
 
 //ENCODE
 define('ENCODE_NOMAL',"application/x-www-form-urlencoded");
@@ -24,6 +26,12 @@ define('ENCODE_FILE',"multipart/form-data");
 //Code
 define('PLUS',1);
 define('MINUS',-1);
+
+/*************************************************
+global
+***************************************************/
+$icon = array('delete_box' => FILE_ICON.'delete_box.jpeg');
+
 
 /**********************************************
 include

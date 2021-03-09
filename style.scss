@@ -269,19 +269,43 @@ List_Style
     }
 }
 
-ul{
+.profile{
+    position: relative;
+    display:flex;
+    @include width_height(100%,100%);
     @include animetion_option(fadeIn_li,ease-in-out,1s);
-    transition-duration: 0.6s;
-    li{
-        @include font("Nico Moji",black);
-        font-size: 25px;
-        @media (max-width:414px){
+    ul{
+        display: block;
+        transition-duration: 0.6s;
+        margin:10px;
+        margin-right:auto;
+        li{
+            @include font("Nico Moji",black);
+            font-size: 25px;
+            @media (max-width:414px){
+                font-size: 15px;
+            }
+        }
+        p{
+            @include font("M PLUS 1p",black);
             font-size: 15px;
         }
+        @media (max-width:414px){
+            padding-left:5px;
+            @include width_height(150px,150px);
+        }
     }
-    p{
-        @include font("M PLUS 1p",black);
-        font-size: 15px;
+    img{
+        transition-duration: 0.6s;
+        display: block;
+        @include width_height(280px,280px);
+        object-position: 50% 100%;
+        margin:10px;
+        padding-right:10px;
+        object-fit: cover;
+        @media (max-width:414px){
+            @include width_height(150px,150px);
+        }
     }
 }
 
@@ -292,7 +316,7 @@ ImageSlide_Style
 .frame{
     position: relative;
     background-color: rgb(85, 83, 83);
-    @include width_height(80%,80%);
+    @include width_height(90%,90%);
     border-radius: 10px;
     margin:0 auto;
     .slide{
@@ -307,18 +331,26 @@ ImageSlide_Style
         overscroll-behavior-x: contain;
         .flame {
             scroll-snap-align: center;
-            @include width_height(300px,400px);
+            @include width_height(400px,500px);
             margin: 10px auto;
             background: #d3d2d2;
             border: solid 5px #555353;
             img{
                 object-fit:contain;
-                @include width_height(300px,380px);
+                @include width_height(400px,480px);
                 margin:10px auto;
                 transition-duration: 0.6s;
                 &:hover{
                     filter:brightness(50%);
                 }
+                @media (max-width:414px){
+                    @include width_height(380px,480px);
+                    margin:0;
+                }
+            }
+            @media (max-width:414px){
+                @include width_height(380px,500px);
+                margin:0;
             }
         }
 
@@ -343,8 +375,8 @@ ImageSlide_Style
         background: rgba(255, 255, 255, 0.85);
         border: rgba(255, 255, 255, 0.85);
         font-size:15px;
-        @include width_height(30px,50px);
-        top: 50%;
+        @include width_height(40px,100px);
+        top: 40%;
         border-radius: 50px;
         margin:0;
         z-index: 1;
@@ -518,24 +550,77 @@ Gallary_Style
 /************************************
 Form_UploadImg_Style
 *************************************/
-.upload{
+.upload,.update{
+    @include width_height(95%,95%);
     position: relative;
-    width: 90%;
-    margin:0 auto;
-    background:cornsilk;
+    margin:10px auto;
+    background: cornsilk;
     border-radius: 10px;
+    display: flex;
+    @media (max-width:414px){
+        display: block;
+    }
+    form{
+        display: block;
+        @include width_height(60%,0%);
+        margin:10px;
+        p{
+            padding-top:10px;
+            margin:auto;
+            @include font("Nico Moji",black);
+        }
+        span{
+            @include font("M PLUS 1p",black);
+        }
+        input{
+            &[type = submit],&[type = reset]{
+                margin:10px 5px;
+                @include font("M PLUS 1p",black);
+                border-radius: 10px;
+                font-size: 15px;
+                background: silver;
+                border:solid 2px rgb(56, 55, 55);
+                transition-duration: 0.6s;
+                &:hover{
+                    background:white;
+                }
+            }
+            &[type = text]{
+                margin:10px;
+                border-radius: 10px;
+                border:solid 2px rgb(56, 55, 55);
+            }
+            &[type = file]{
+                display: none;
+            }
+        }
+        textarea{
+            margin:10px;
+            @include font("M PLUS 1p",black);
+            border-radius: 10px;
+            border:solid 2px rgb(56, 55, 55);
+            @media (max-width:414px){
+                @include width_height(100%,100%);
+            }
+        }
+        label{
+            margin:15px 5px;
+            font-size: 16px;
+            @include font("M PLUS 1p",black);
+            background: silver;
+            border-radius: 5px;
+            border:solid 2px rgb(56, 55, 55);
+        }
+    }
+    img{
+        display: block;
+        margin:10px auto;
+        @include width_height(300px,300px);
+        border:dashed 2px rgb(56, 55, 55);
+        object-fit: contain;
+    }
 }
 
-/************************************
-Update_Form_Style
-*************************************/
-.update{
-    position: relative;
-    width: 90%;
-    margin:0 auto;
-    background:cornsilk;
-    border-radius: 10px;
-}
 
 /************************************
 Footer_Style

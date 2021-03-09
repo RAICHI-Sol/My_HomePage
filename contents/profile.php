@@ -11,5 +11,6 @@ Transitional" "http://www.w3.org/TR/html4/frameset.dtd">
         main_contents("PROFILE",$mode);
     ?>
     <script src="/php_test/scroll_ivent.js"></script>
+    <script src="/php_test/profile_ivent.js"></script>
  </body>
 </html>

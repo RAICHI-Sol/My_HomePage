@@ -392,7 +392,13 @@ List_Style
   }
 }
 
-ul {
+.profile {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 100%;
   -webkit-animation-name: fadeIn_li;
           animation-name: fadeIn_li;
   -webkit-animation-delay: 0s;
@@ -401,26 +407,61 @@ ul {
           animation-duration: 1s;
   -webkit-animation-timing-function: ease-in-out;
           animation-timing-function: ease-in-out;
-  -webkit-transition-duration: 0.6s;
-          transition-duration: 0.6s;
 }
 
-ul li {
+.profile ul {
+  display: block;
+  -webkit-transition-duration: 0.6s;
+          transition-duration: 0.6s;
+  margin: 10px;
+  margin-right: auto;
+}
+
+.profile ul li {
   font-family: "Nico Moji";
   color: black;
   font-size: 25px;
 }
 
 @media (max-width: 414px) {
-  ul li {
+  .profile ul li {
     font-size: 15px;
   }
 }
 
-ul p {
+.profile ul p {
   font-family: "M PLUS 1p";
   color: black;
   font-size: 15px;
+}
+
+@media (max-width: 414px) {
+  .profile ul {
+    padding-left: 5px;
+    width: 150px;
+    height: 150px;
+  }
+}
+
+.profile img {
+  -webkit-transition-duration: 0.6s;
+          transition-duration: 0.6s;
+  display: block;
+  width: 280px;
+  height: 280px;
+  -o-object-position: 50% 100%;
+     object-position: 50% 100%;
+  margin: 10px;
+  padding-right: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+@media (max-width: 414px) {
+  .profile img {
+    width: 150px;
+    height: 150px;
+  }
 }
 
 /************************************
@@ -429,8 +470,8 @@ ImageSlide_Style
 .frame {
   position: relative;
   background-color: #555353;
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 90%;
   border-radius: 10px;
   margin: 0 auto;
 }
@@ -442,8 +483,8 @@ ImageSlide_Style
   width: 80%;
   height: 80%;
   margin: 0 auto;
-  -webkit-transition-duration: 1s;
-          transition-duration: 1s;
+  -webkit-transition-duration: 0.6s;
+          transition-duration: 0.6s;
   overflow: hidden;
   overflow-x: auto;
   -ms-scroll-snap-type: x mandatory;
@@ -454,8 +495,8 @@ ImageSlide_Style
 
 .frame .slide .flame {
   scroll-snap-align: center;
-  width: 300px;
-  height: 400px;
+  width: 400px;
+  height: 500px;
   margin: 10px auto;
   background: #d3d2d2;
   border: solid 5px #555353;
@@ -464,8 +505,8 @@ ImageSlide_Style
 .frame .slide .flame img {
   -o-object-fit: contain;
      object-fit: contain;
-  width: 300px;
-  height: 380px;
+  width: 400px;
+  height: 480px;
   margin: 10px auto;
   -webkit-transition-duration: 0.6s;
           transition-duration: 0.6s;
@@ -474,6 +515,22 @@ ImageSlide_Style
 .frame .slide .flame img:hover {
   -webkit-filter: brightness(50%);
           filter: brightness(50%);
+}
+
+@media (max-width: 414px) {
+  .frame .slide .flame img {
+    width: 380px;
+    height: 480px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 414px) {
+  .frame .slide .flame {
+    width: 380px;
+    height: 500px;
+    margin: 0;
+  }
 }
 
 .frame .slide::-webkit-scrollbar {
@@ -503,9 +560,9 @@ ImageSlide_Style
   background: rgba(255, 255, 255, 0.85);
   border: rgba(255, 255, 255, 0.85);
   font-size: 15px;
-  width: 30px;
-  height: 50px;
-  top: 50%;
+  width: 40px;
+  height: 100px;
+  top: 40%;
   border-radius: 50px;
   margin: 0;
   z-index: 1;
@@ -755,23 +812,102 @@ Gallary_Style
 /************************************
 Form_UploadImg_Style
 *************************************/
-.upload {
+.upload, .update {
+  width: 95%;
+  height: 95%;
   position: relative;
-  width: 90%;
-  margin: 0 auto;
+  margin: 10px auto;
   background: cornsilk;
   border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
-/************************************
-Update_Form_Style
-*************************************/
-.update {
-  position: relative;
-  width: 90%;
-  margin: 0 auto;
-  background: cornsilk;
+@media (max-width: 414px) {
+  .upload, .update {
+    display: block;
+  }
+}
+
+.upload form, .update form {
+  display: block;
+  width: 60%;
+  height: 0%;
+  margin: 10px;
+}
+
+.upload form p, .update form p {
+  padding-top: 10px;
+  margin: auto;
+  font-family: "Nico Moji";
+  color: black;
+}
+
+.upload form span, .update form span {
+  font-family: "M PLUS 1p";
+  color: black;
+}
+
+.upload form input[type=submit], .upload form input[type=reset], .update form input[type=submit], .update form input[type=reset] {
+  margin: 10px 5px;
+  font-family: "M PLUS 1p";
+  color: black;
   border-radius: 10px;
+  font-size: 15px;
+  background: silver;
+  border: solid 2px #383737;
+  -webkit-transition-duration: 0.6s;
+          transition-duration: 0.6s;
+}
+
+.upload form input[type=submit]:hover, .upload form input[type=reset]:hover, .update form input[type=submit]:hover, .update form input[type=reset]:hover {
+  background: white;
+}
+
+.upload form input[type=text], .update form input[type=text] {
+  margin: 10px;
+  border-radius: 10px;
+  border: solid 2px #383737;
+}
+
+.upload form input[type=file], .update form input[type=file] {
+  display: none;
+}
+
+.upload form textarea, .update form textarea {
+  margin: 10px;
+  font-family: "M PLUS 1p";
+  color: black;
+  border-radius: 10px;
+  border: solid 2px #383737;
+}
+
+@media (max-width: 414px) {
+  .upload form textarea, .update form textarea {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.upload form label, .update form label {
+  margin: 15px 5px;
+  font-size: 16px;
+  font-family: "M PLUS 1p";
+  color: black;
+  background: silver;
+  border-radius: 5px;
+  border: solid 2px #383737;
+}
+
+.upload img, .update img {
+  display: block;
+  margin: 10px auto;
+  width: 300px;
+  height: 300px;
+  border: dashed 2px #383737;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 /************************************

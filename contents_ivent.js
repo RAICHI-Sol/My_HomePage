@@ -33,7 +33,7 @@ function Chenge_button(num)
 {
     clearInterval(time);
     now_num = Count_Adj(num);
-    $('.slide').animate({scrollLeft:300 * now_num},300,'linear');
+    $('.slide').animate({scrollLeft:390 * now_num},300,'linear');
     target_r = Count_Adj(now_num +1);
     target_l = Count_Adj(now_num -1);
     Button_light();
@@ -48,11 +48,11 @@ function Chenge_scroll(num)
     target_l =  Count_Adj(now_num -1);
     if(num == 1)
     {
-        $('.slide').animate({scrollLeft:300 * target_r},300,'linear');
+        $('.slide').animate({scrollLeft:390 * target_r},300,'linear');
     }
     else
     {
-        $('.slide').animate({scrollLeft:300 * target_l},300,'linear');
+        $('.slide').animate({scrollLeft:390 * target_l},300,'linear');
     }
     now_num = Count_Adj(now_num + num);
     Button_light();
@@ -76,7 +76,7 @@ function  Button_light() {
 //タイマー処理
 var Change_image_Interval = function(){
     now_num = Count_Adj(now_num + 1);
-    $('.slide').animate({scrollLeft:300 * now_num},300,'linear');
+    $('.slide').animate({scrollLeft:390 * now_num},300,'linear');
     Button_light();
 };
 
