@@ -467,14 +467,13 @@ class Header extends File_prosess
     public function __construct($file_path)
     {
         parent::__construct($file_path);
-        $this->img = new Image('logo');
     }
 
     //抽象メソッドの具現化(read_process)
     public function read_process($line)
     {
-        list($url,$img_dr,$name) = explode(" ,",$line);
-        $this->img->create_URL($url,$img_dr,$name);
+        list($url,$name) = explode(" ,",$line);
+        $this->create_logo($url,$name);
     }
 
     //抽象メソッドの具現化(write_process)
@@ -487,6 +486,14 @@ class Header extends File_prosess
     public function print_title($mode)
     {
         echo ($mode == "Debug")?'<h1>(開発者用)</h1>':'<h1>RAICHIのホームページ</h1>';
+    }
+
+    //ロゴの作成
+    function create_logo($url,$name)
+    {
+        echo <<< END_OF_TEXT
+            <a href = "$url" target="_blank" class = "fab $name"></a>
+        END_OF_TEXT;
     }
 }
 
@@ -618,15 +625,15 @@ class Datafile_Form extends Form{
     {
         echo '<p id = "upload">【 TITLE 】</p>';
         Input::Text(40,'タイトル');
-        echo '<p>【 COMMENT 】</p>';
+        tag_p("【 COMMENT 】");
         Input::Textarea(4,40);
-        echo '<p>【 IMAGE 】</p>';
+        tag_p("【 IMAGE 】");
         Input::File(".png, .jpg, .jpeg",'upload_data','req');
-        echo <<<EOT
-        <label for = "upload_data">
-            ファイルアップロード
-        </label>
-        <span id = "image_name">選択されていません。</span><br>
+        echo <<< EOT
+            <label for = "upload_data">
+                ファイルアップロード
+            </label>
+            <span id = "image_name">選択されていません。</span><br>
         EOT;
         Input::Submit("submit","送信");
         Input::Submit("reset","リセット");
@@ -695,18 +702,18 @@ class Update_Form extends Form
     //抽象メソッド(create_input)
     public function create_input()
     {
-        echo '<p>【 USR_NAME 】</p>';
+        tag_p("【 USR_NAME 】");
         Input::Text(40,'ユーザーネーム',$this->usrname);
-        echo '<p>【 PROFILE 】</p>';
+        tag_p("【 PROFILE 】");
         Input::Textarea(8,40,$this->contents);
         echo '<br>';
-        echo '<p>【 IMAGE 】</p>';
+        tag_p("【 IMAGE 】");
         Input::File(".png, .jpg, .jpeg",'updata_data');
         echo <<<EOT
-        <label for = "updata_data">
-            ファイルアップロード
-        </label>
-        <span id = "image_name1">選択されていません。</span><br>
+            <label for = "updata_data">
+                ファイルアップロード
+            </label>
+            <span id = "image_name1">選択されていません。</span><br>
         EOT;
         Input::Submit("submit","送信");
         Input::Submit("reset","リセット");
@@ -801,12 +808,10 @@ function create_menu($mode)
 function create_header($mode)
 {
     echo '<header class = "title">';
-    echo '<div class = "logo">';
 
     $Head = new Header(LOGO_PATH);
     $Head->read();
     $Head->close();
-    echo '</div>';
     $Head->print_title($mode);
     echo '</header>';
 }
@@ -864,12 +869,9 @@ function create_gallery_server(){
 *************************************************/
 function main_contents($content_name,$mode)
 {
+    echo '<div class = "main_flame">';
     date_default_timezone_set('Asia/Tokyo');
-    create_header($mode);
     create_menu($mode);
-
-    echo '<main class = "contents">';
-    echo '<h1>'.$content_name.'</h1>';
 
     $Image = new Imag_Slide(IMG_PATH);
 
@@ -877,15 +879,20 @@ function main_contents($content_name,$mode)
     {
         case "HOME":
             $Image->Show_Image();
+            echo '<main class = "contents">';
             $News = new New_News(NEWFILE_PATH);
             $News->read();
             $News->close();
             $News->print_news();
             break;
         case "PROFILE":
+            echo '<main class = "contents">';
+            echo '<h1>'.$content_name.'</h1>';
             create_profile($mode);
             break;
         case "GALLERY":
+            echo '<main class = "contents">';
+            echo '<h1>'.$content_name.'</h1>';
             $Image->Show_Gallery($mode);
             //サーバー専用のフォーム
             if($mode == "Debug"):
@@ -895,7 +902,6 @@ function main_contents($content_name,$mode)
         default:
             break;
     }
-    echo "</main>";
-    create_footer();
+    echo "</main></div>";
 }
 ?>

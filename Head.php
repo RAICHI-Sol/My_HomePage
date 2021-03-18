@@ -42,6 +42,7 @@ echo <<< END_OF_TEXT
     <link href="https://fonts.googleapis.com/earlyaccess/nicomoji.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=M+PLUS+1p" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Bangers rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
     <link rel="icon" type="image/jpg" href="./image/raichi.jpg">
     <title>RAICHI_Official</title>
 END_OF_TEXT;
