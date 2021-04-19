@@ -156,7 +156,7 @@ class Image{
     public function create($img_name,$comment,$id = "none")
     {
         echo <<< END_OF_TEXT
-            <img src = "/php_test/image/{$this->dir_file}/$img_name" alt = "$comment"
+            <img src = "/image/{$this->dir_file}/$img_name" alt = "$comment"
         END_OF_TEXT;
         echo $this->add_attribute("class",$this->style);
         echo $this->add_attribute("id",$id);
@@ -298,7 +298,7 @@ function tag_p($str){
 function change_page($page,$text)
 {
     echo <<< END_OF_TEXT
-        <a href = "/php_test/$page" target="contents">$text</a><br>
+        <a href = "/$page" target="contents">$text</a><br>
     END_OF_TEXT;
 }
 

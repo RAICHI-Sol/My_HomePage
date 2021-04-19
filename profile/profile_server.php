@@ -3,10 +3,10 @@ Transitional" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
     <head>
       <?php
-         $path = $_SERVER['DOCUMENT_ROOT'];
-         include($path.'/php_test/Head.php');
+         $path = __DIR__;
+         include('/app/Head.php');
       ?>
-      <?php include('class.php');?>
+      <?php include($path.'/class.php');?>
       <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     </head>
     <body>
@@ -28,7 +28,7 @@ Transitional" "http://www.w3.org/TR/html4/frameset.dtd">
       <footer>
           <?php create_footer();?>
       </footer>
-    <script src="/php_test/scroll_ivent.js"></script>
-    <script src="profile_ivent.js"></script>
+      <script src="/scroll_ivent.js"></script>
+      <script src="profile_ivent.js"></script>
     </body>
 </html>
