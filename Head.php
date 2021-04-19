@@ -2,13 +2,16 @@
 /**********************************************
 define
 ***********************************************/
+//document_root
+$root = $_SERVER['DOCUMENT_ROOT'];
+
 //php_path
 define('GALLERY_SERVER',"/php_test/contents/gallery_server.php");
 define('PROFILE_SERVER',"/php_test/contents/profile_server.php");
 define('CONTENTS_ID',"/php_test/contents/contents.php#");
 
 //csv_file_path
-define('DOCUMENT_PATH',$_SERVER['DOCUMENT_ROOT'].'/php_test');
+define('DOCUMENT_PATH',$root.'/php_test');
 define('NEWFILE_PATH',DOCUMENT_PATH.'/file/News.csv');
 define('IMG_PATH',DOCUMENT_PATH.'/file/Image.csv');
 define('LOGO_PATH',DOCUMENT_PATH.'/file/logo.csv');
