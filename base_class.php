@@ -69,7 +69,7 @@ abstract class File_prosess{
     public function fileupload_check($tmp_file,$store_dir,$filename)
     {
         if($_FILES['datafile']['error'] != 0){
-            _alert('アップロードが失敗しました。');
+            _alert('アップロードが失敗しました。Error:'.$_FILES['datafile']['error']);
             return 1;
         }
 

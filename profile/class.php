@@ -161,7 +161,7 @@ class Update_Form extends Form
     {
         echo <<< EOT
             <div class = "prev">
-                <img id = "preview_prof" src = "/php_test/image/icon/{$this->image}">
+                <img id = "preview_prof" src = "/image/icon/{$this->image}">
             </div>
         EOT;
     }

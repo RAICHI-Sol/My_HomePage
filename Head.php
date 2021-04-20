@@ -20,7 +20,7 @@ define('PROF_PATH',DOCUMENT_PATH.'/file/prof.csv');
 //file_path
 define('STORE_ILLUST',DOCUMENT_PATH."/image/illust/");
 define('STORE_ICON',DOCUMENT_PATH."/image/icon/");
-define('FILE_ICON',DOCUMENT_PATH."/image/icon/");
+define('FILE_ICON',"/image/icon/");
 
 //ENCODE
 define('ENCODE_NOMAL',"application/x-www-form-urlencoded");
