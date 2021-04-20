@@ -7,7 +7,7 @@ Transitional" "http://www.w3.org/TR/html4/frameset.dtd">
          include('/app/Head.php');
       ?>
    <?php include($path.'/class.php');?>
-   <script src = "http://code.jquery.com/jquery-1.11.0.min.js"></script>
+   <script src = "https://code.jquery.com/jquery-1.11.0.min.js"></script>
  </head>
  <body>
       <header>
